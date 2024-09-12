@@ -1,5 +1,5 @@
 "use client";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import InfoCard from "./components/info-card";
 import SearchBar from "./components/search-bar";
 
@@ -12,23 +12,23 @@ export type Pokemon = {
 };
 
 export default function Home() {
-  const [pokemon, setPokemon] = useState<Pokemon[]>([])
+  const [pokemon, setPokemon] = useState<Pokemon[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
-  useEffect(()=>{
+  useEffect(() => {
     const getAllPokemon = async () => {
       try {
-        const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=151");
+        const response = await fetch(
+          "https://pokeapi.co/api/v2/pokemon?limit=151"
+        );
         const data = await response.json();
 
-        const urls = data.results.map((p: { url:string }) => p.url);
+        const urls = data.results.map((p: { url: string }) => p.url);
 
         const pokemonData = await Promise.all(
           urls.map(async (url: string) => {
-            const response = await fetch(
-              url
-            );
+            const response = await fetch(url);
             const pokedata = await response.json();
 
             return {
@@ -38,21 +38,21 @@ export default function Home() {
               types: pokedata.types.map(
                 (t: { type: { name: string } }) => t.type.name
               ),
-              weight: pokedata.weight
+              weight: pokedata.weight,
             };
           })
         );
 
         setPokemon(pokemonData);
       } catch (error) {
-      console.log("Error fetching pokemon", error);
+        console.log("Error fetching pokemon", error);
       }
     };
 
     getAllPokemon();
   }, []);
 
-  const filteredList = pokemon.filter((p) => 
+  const filteredList = pokemon.filter((p) =>
     p.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -62,7 +62,7 @@ export default function Home() {
     if (sortOrder == "asc") {
       return nameA.localeCompare(nameB);
     } else {
-      return nameB.localeCompare(nameA)
+      return nameB.localeCompare(nameA);
     }
   });
 
@@ -75,7 +75,7 @@ export default function Home() {
       <header className=" bg-orange-500 py-4 px-8 border-b border-white flex justify-between items-center">
         <h1 className=" text-3xl font-bold text-black">Herwals Pokedex</h1>
         <div className="">
-          <SearchBar onSearch={(searchQuery) => setSearchQuery(searchQuery)}/> 
+          <SearchBar onSearch={(searchQuery) => setSearchQuery(searchQuery)} />
           <button
             onClick={handleSort}
             className="px-1 py-1 m-1 bg-yellow-400 text-white rounded-md hover:bg-yellow-600 ml-auto"
@@ -84,12 +84,12 @@ export default function Home() {
           </button>
         </div>
       </header>
-     
-      <div className="grid grid-cols-3 mx-64 gap-12 py-8 px-8 bg-yellow-600 border-x border-white">  
+
+      <div className="grid grid-cols-3 mx-64 gap-12 py-8 px-8 bg-yellow-600 border-x border-white">
         {sortedPokemon.map((p: Pokemon) => (
-          <InfoCard key={p.name} pokemon={p} /> 
-      ))}
+          <InfoCard key={p.name} pokemon={p} />
+        ))}
       </div>
     </main>
-    );
-  }
+  );
+}
