@@ -22,7 +22,7 @@ export default function Home() {
   }, []);
 
   const filteredList = pokemons.filter((pokemon) =>
-    pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
+    pokemon.name.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const sortedPokemon = AlphabetSort(filteredList, sortOrder);
@@ -30,7 +30,7 @@ export default function Home() {
   const filteredPokemon = filteredList.filter(
     (pokemon) =>
       selectedType.length === 0 ||
-      pokemon.types.some((type) => selectedType.includes(type))
+      pokemon.types.some((type) => selectedType.includes(type)),
   );
 
   const handleAlphabetSort = () => {

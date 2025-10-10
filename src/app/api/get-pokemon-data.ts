@@ -25,10 +25,10 @@ export const getPokemonData = async (): Promise<PokemonProps[]> => {
           image: pokedata.sprites.front_default,
           weight: pokedata.weight,
           types: pokedata.types.map(
-            (typeList: { type: { name: string } }) => typeList.type.name
+            (typeList: { type: { name: string } }) => typeList.type.name,
           ),
         };
-      })
+      }),
     );
 
     return pokemonData;
