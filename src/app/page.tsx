@@ -4,11 +4,13 @@ import SearchBar from "./components/search-bar";
 import InfoCard from "./components/info-card";
 import { PokemonProps, getPokemonData } from "./api/get-pokemon-data";
 import { AlphabetSort } from "./utils/sort";
+import FilterMenu from "./components/filter-menu";
 
 export default function Home() {
-  const [pokemon, setPokemon] = useState<PokemonProps[]>([]);
+  const [pokemons, setPokemon] = useState<PokemonProps[]>([]);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [selectedType, setSelectedType] = useState<string[]>([]);
 
   useEffect(() => {
     const getAllPokemon = async () => {
@@ -19,17 +21,21 @@ export default function Home() {
     getAllPokemon();
   }, []);
 
-  const filteredList = pokemon.filter((pokemons) =>
-    pokemons.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredList = pokemons.filter((pokemon) =>
+    pokemon.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const sortedPokemon = AlphabetSort(filteredList, sortOrder);
 
+  const filteredPokemon = filteredList.filter(
+    (pokemon) =>
+      selectedType.length === 0 ||
+      pokemon.types.some((type) => selectedType.includes(type))
+  );
+
   const handleAlphabetSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
-
-  const handleTypeSort = () => {};
 
   return (
     <main className=" bg-gray-50 text-white flex flex-col">
@@ -49,25 +55,22 @@ export default function Home() {
             >
               {"↓↑"}
             </button>
-            <button
-              className="p-1 text-white rounded-md hover:border-gray-400 border "
-              onClick={handleTypeSort}
-              title={"Sort by type"}
-            >
-              <img
-                src="/assets/fire-type.png"
-                alt="Fire Type"
-                className="w-7 h-7"
-              />
-            </button>
+            <FilterMenu
+              selectedTypes={selectedType}
+              onTypesChange={setSelectedType}
+            />
           </div>
         </div>
       </header>
 
       <div className="grid grid-cols-5 mx-8 gap-x-8 gap-y-16 p-8 border-2 border-purple-600 rounded-lg">
-        {sortedPokemon.map((pokemon: PokemonProps) => (
-          <InfoCard key={pokemon.id} pokemon={pokemon} />
-        ))}
+        {filteredPokemon.length === 151
+          ? sortedPokemon.map((pokemon: PokemonProps) => (
+              <InfoCard key={pokemon.id} pokemon={pokemon} />
+            ))
+          : filteredPokemon.map((pokemon: PokemonProps) => (
+              <InfoCard key={pokemon.id} pokemon={pokemon} />
+            ))}
       </div>
     </main>
   );
