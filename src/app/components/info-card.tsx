@@ -1,5 +1,6 @@
 import { PokemonProps } from "../api/get-pokemon-data";
 import { typeColors } from "../utils/types";
+import Image from "next/image";
 
 interface InfoCardProps {
   pokemon: PokemonProps;
@@ -14,7 +15,15 @@ export default function InfoCard({ pokemon }: InfoCardProps) {
       <div
         className={`w-full p-4 rounded-md flex justify-center items-center ${bgColor}`}
       >
-        <img src={pokemon.image} alt={pokemon.name} className=" scale-125" />
+        {pokemon.image && (
+          <Image
+            src={pokemon.image}
+            alt={pokemon.name}
+            className=" scale-125"
+            width={96}
+            height={96}
+          />
+        )}
       </div>
 
       <div className="flex flex-row border-b-2 border-gray-500 w-full justify-between py-1">
